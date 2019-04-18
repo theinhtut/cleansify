@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Header from './components/Header';
+import { Provider } from 'react-redux';
 import AppRouter from './routers/AppRouter';
 import configureStore from './store/configureStore';
 
@@ -10,9 +10,15 @@ import 'normalize.css/normalize.css';
 import './styles/styles.scss';
 
 const store = configureStore();
-store.dispatch(addRequest({ email: 'test@gmail.com', location: 'Cheras', date: 123123123 }));
+store.dispatch(addRequest({ email: 'test1@gmail.com', location: 'Cheras', date: 123123123 }));
+store.dispatch(addRequest({ email: 'test2@gmail.com', location: 'TTDI', date: 22334455 }));
 console.log(store.getState());
 
-const jsx = (<Header />);
+const jsx = (
+    <Provider store={store}>
+        <AppRouter/>
+    </Provider>
 
-ReactDOM.render(<AppRouter/>, document.getElementById('app'));
+);
+
+ReactDOM.render(jsx, document.getElementById('app'));

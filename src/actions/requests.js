@@ -10,7 +10,7 @@ export const addRequest = (
     ) => ({
   type: 'ADD_REQUEST',
   request: {
-    //id: uuid(),
+    id: uuid(),
     email,
     location,
     date
