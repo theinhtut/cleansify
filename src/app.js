@@ -15,32 +15,40 @@ const store = configureStore();
 console.log(store.getState());
 
 // database.ref('vendors').push({
-//     name: 'Cleanomic',
-//     phone: '+60181111111',
+//     name: 'Washly @SW',
+//     phone: '+60174444444',
 //     location: 'Petaling Jaya',
 //     availability: true
 // });
 
-// database.ref('vendors').push({
-//     name: 'Big C',
-//     phone: '+60182222222',
-//     location: 'Subang Jaya',
-//     availability: true
-// });
-
-// database.ref('vendors').push({
-//     name: 'Cleanity',
-//     phone: '+60183333333',
-//     location: 'TTDI',
-//     availability: true
-// });
+let availableVendors = [];
 
 
+let ref = database.ref('vendors');
+ref.on('value', (data) => {
+    // console.log(data.val());
+    let result = data.val();
+    let keys = Object.keys(result);
 
-// let ref = database.ref('jobRequests');
-// ref.on('value', (data) => {
-//     console.log(data);
-// });
+    // console.log(result);
+    
+    for (let i = 0; i < keys.length; i++) {
+        let k = keys[i];
+        let vendorLocation = result[k].location;
+        let vendorAvailability = result[k].availability;
+        
+        
+        if(  vendorLocation === 'TTDI' && vendorAvailability === true ){
+            availableVendors.push(result[k]);
+            
+        } else {
+            
+        }
+    }
+    console.log(availableVendors);
+});
+
+// console.log('availableVendors: ' + availableVendors);
 
 const jsx = (
     <Provider store={store}>

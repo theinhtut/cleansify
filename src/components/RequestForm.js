@@ -12,9 +12,9 @@ export default class RequestForm extends React.Component {
     date: moment(),
     calendarFocused: false,
     error: '',
+    clickedCheck: false,
     vendorName: '',
-    vendorsArray: [],
-    
+    vendorsArray: []
   };
   onEmailChange = e => {
     const email = e.target.value;
@@ -22,11 +22,21 @@ export default class RequestForm extends React.Component {
   };
   onLocationChange = e => {
     const location = e.target.value;
-    this.setState(() => ({ location }));
+    this.setState(() => ({
+      location,
+      vendorName: '',
+      vendorsArray: [],
+      clickedCheck: false
+    }));
   };
   onDateChange = date => {
     if (date) {
-      this.setState(() => ({ date }));
+      this.setState(() => ({
+        date,
+        vendorName: '',
+        vendorsArray: [],
+        clickedCheck: false
+      }));
     }
   };
   onFocusChange = ({ focused }) => {
@@ -55,22 +65,54 @@ export default class RequestForm extends React.Component {
     const vendorName = e.target.value;
     this.setState(() => ({ vendorName }));
   };
-  onCheckAvailability = (e) => {
-      console.log('Check Availability Triggered');
+  onCheckAvailability = e => {
+
+    // Check e-mail and location input
+    if (this.state.email === '' || this.state.location === '') {
+      // No input --> throws error
+      this.setState(() => ({
+        error:
+          'Please fill in your e-mail and location then click "Check Availability".'
+      }));
+    } else {
+      // Valid inputs then check availability in Firebase database
       database
-      .ref('vendors')
-      .once('value')
-      .then(snapshot => {
-        const vendors = [];
-        snapshot.forEach(childSnapshot => {
-          vendors.push({
-            id: childSnapshot.key,
-            ...childSnapshot.val()
+        .ref('vendors')
+        .once('value')
+        .then(snapshot => {
+          const vendors = [];
+
+          snapshot.forEach(childSnapshot => {
+            let vendorLocation = childSnapshot.val().location;
+            let vendorAvailability = childSnapshot.val().availability;
+            
+            // Find with reference(vendor's location and availability) --> Match --> Push and save to the array
+            if (vendorLocation === this.state.location && vendorAvailability === true) {
+              vendors.push({
+                id: childSnapshot.key,
+                ...childSnapshot.val()
+              });
+            } else {
+            }
           });
+          console.log(vendors);
+          {
+            vendors.length > 0
+              ? alert(vendors.length + ' result(s) found')
+              : alert('No result found! Try different location and date');
+          }
+
+          this.setState(() => ({
+            vendorsArray: vendors,
+            vendorName: '',
+            clickedCheck: true
+          }));
+          {
+            vendors.length < 1 &&
+              this.setState(() => ({ clickedCheck: false }));
+          }
         });
-        console.log(vendors);
-        this.setState(() => ({ vendorsArray: vendors }));
-      });
+    }
   };
   render() {
     return (
@@ -89,9 +131,7 @@ export default class RequestForm extends React.Component {
             value={this.state.location}
             onChange={this.onLocationChange}
           >
-            <option value="" disabled>
-              Choose Your Location
-            </option>
+            <option value="" disabled>Choose Your Location</option>
             <option value="Petaling Jaya">Petaling Jaya</option>
             <option value="Subang Jaya">Subang Jaya</option>
             <option value="Puchong">Puchong</option>
@@ -111,37 +151,37 @@ export default class RequestForm extends React.Component {
             onFocusChange={this.onFocusChange}
             numberOfMonths={1}
           />
-          <select
-            name="vendor"
-            value={this.state.vendorName}
-            onChange={this.onVendorChange}
-            
-          >
-            <option value="" disabled>Choose available vendor</option>
-            {
-              this.state.vendorsArray.map((vendor) => {
-                return <option value={vendor.name} key={vendor.id}>{vendor.name}</option>
-              })
-            }
-
-          </select>
-
-          <button>Request Service</button>
+          {this.state.clickedCheck === true &&
+            this.state.vendorsArray.length > 0 && (
+              <select
+                name="vendor"
+                value={this.state.vendorName}
+                onChange={this.onVendorChange}
+              >
+                <option value="" disabled>
+                  Choose available vendor
+                </option>
+                {this.state.vendorsArray.map(vendor => {
+                  return (
+                    <option value={vendor.name} key={vendor.id}>
+                      {vendor.name}
+                    </option>
+                  );
+                })}
+              </select>
+            )}
+          {this.state.clickedCheck === true &&
+            this.state.vendorsArray.length > 0 && (
+              <button>Request Service</button>
+            )}
         </form>
-        <button onClick={this.onCheckAvailability}>Check Availability</button>
-        {this.state.vendorsArray.length === 0 ? 
-        <p>Not Found</p> :
-        <p>{this.state.vendorsArray.length} result(s) found!!</p>
-        }
-        {/* <select name="test" >
-        {this.state.vendorsArray.map((request) => {
-            return <option value={request.name} key={request.id}>{request.name}</option>
-        })}
-        </select> */}
-        
-       
+        {this.state.clickedCheck === false &&
+          this.state.vendorsArray.length === 0 && (
+            <button onClick={this.onCheckAvailability}>
+              Check Availability
+            </button>
+          )}
       </div>
-
     );
   }
 }
