@@ -14,8 +14,32 @@ const store = configureStore();
 // store.dispatch(addRequest({ email: 'test2@gmail.com', location: 'TTDI', date: 1555992000000 }));
 console.log(store.getState());
 
-// database.ref().push({
-//     name1: 'test1'
+// database.ref('vendors').push({
+//     name: 'Cleanomic',
+//     phone: '+60181111111',
+//     location: 'Petaling Jaya',
+//     availability: true
+// });
+
+// database.ref('vendors').push({
+//     name: 'Big C',
+//     phone: '+60182222222',
+//     location: 'Subang Jaya',
+//     availability: true
+// });
+
+// database.ref('vendors').push({
+//     name: 'Cleanity',
+//     phone: '+60183333333',
+//     location: 'TTDI',
+//     availability: true
+// });
+
+
+
+// let ref = database.ref('jobRequests');
+// ref.on('value', (data) => {
+//     console.log(data);
 // });
 
 const jsx = (

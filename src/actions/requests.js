@@ -13,9 +13,10 @@ export const startAddRequest = (requestData = {}) => {
       const {
         email = '',
         location = '',
-        date = 0
+        date = 0,
+        vendorName = ''
     } = requestData;
-    const request = { email, location, date };
+    const request = { email, location, date, vendorName };
 
     return database.ref('jobRequests').push(request).then((ref) => {
         dispatch(addRequest({
