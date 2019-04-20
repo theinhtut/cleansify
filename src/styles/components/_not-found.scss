@@ -1,0 +1,16 @@
+.not-found {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: center;
+    width: 100wh;
+}
+
+.not-found__subtitle {
+    font-size: 2rem;
+}
+
+.not-found__icon {
+    height: 40%;
+}

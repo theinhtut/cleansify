@@ -66,7 +66,6 @@ export default class RequestForm extends React.Component {
     this.setState(() => ({ vendorName }));
   };
   onCheckAvailability = e => {
-
     // Check e-mail and location input
     if (this.state.email === '' || this.state.location === '') {
       // No input --> throws error
@@ -85,9 +84,12 @@ export default class RequestForm extends React.Component {
           snapshot.forEach(childSnapshot => {
             let vendorLocation = childSnapshot.val().location;
             let vendorAvailability = childSnapshot.val().availability;
-            
+
             // Find with reference(vendor's location and availability) --> Match --> Push and save to the array
-            if (vendorLocation === this.state.location && vendorAvailability === true) {
+            if (
+              vendorLocation === this.state.location &&
+              vendorAvailability === true
+            ) {
               vendors.push({
                 id: childSnapshot.key,
                 ...childSnapshot.val()
@@ -117,9 +119,12 @@ export default class RequestForm extends React.Component {
   render() {
     return (
       <div>
-        <form onSubmit={this.onSubmit} action="">
-          {this.state.error && <p>{this.state.error}</p>}
+        <form className="form" onSubmit={this.onSubmit} action="">
+          {this.state.error && (
+            <p className="form__error"><i className="far fa-times-circle"></i> {this.state.error}</p>
+          )}
           <input
+            className="text-input"
             type="email"
             placeholder="E-mail"
             autoFocus
@@ -127,11 +132,14 @@ export default class RequestForm extends React.Component {
             onChange={this.onEmailChange}
           />
           <select
+            className="select"
             name="location"
             value={this.state.location}
             onChange={this.onLocationChange}
           >
-            <option value="" disabled>Choose Your Location</option>
+            <option value="" disabled>
+              Choose Your Location
+            </option>
             <option value="Petaling Jaya">Petaling Jaya</option>
             <option value="Subang Jaya">Subang Jaya</option>
             <option value="Puchong">Puchong</option>
@@ -154,6 +162,7 @@ export default class RequestForm extends React.Component {
           {this.state.clickedCheck === true &&
             this.state.vendorsArray.length > 0 && (
               <select
+                className="select"
                 name="vendor"
                 value={this.state.vendorName}
                 onChange={this.onVendorChange}
@@ -172,15 +181,17 @@ export default class RequestForm extends React.Component {
             )}
           {this.state.clickedCheck === true &&
             this.state.vendorsArray.length > 0 && (
-              <button>Request Service</button>
-            )}
+              <button className="button">Request Service</button>
+            )
+          }
+          {this.state.clickedCheck === false &&
+            this.state.vendorsArray.length === 0 && (
+              <button className="button" onClick={this.onCheckAvailability}>
+                Check Availability
+              </button>
+            )
+          }
         </form>
-        {this.state.clickedCheck === false &&
-          this.state.vendorsArray.length === 0 && (
-            <button onClick={this.onCheckAvailability}>
-              Check Availability
-            </button>
-          )}
       </div>
     );
   }
