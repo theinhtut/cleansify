@@ -1,9 +1,10 @@
 import React from 'react';
 import RequestList from './RequestList';
+import RequestSummary from './RequestSummary';
 
 const CleansifyDashboardPage = () => (
     <div>
-        <h3>This is dashboard page</h3>
+        <RequestSummary/>
         <RequestList/>
     </div>
 );
