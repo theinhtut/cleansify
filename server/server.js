@@ -6,8 +6,10 @@ const bodyParser = require('body-parser');
 const nodemailer = require('nodemailer');
 const moment = require('moment');
 
+
 // env variables
-require('dotenv').config({ path: '.env.development' });
+// require('dotenv').config({ path: '.env.development' });
+const keys = require('../config/keys');
 
 // Body Parser Middleware
 app.use(bodyParser.json());
@@ -42,8 +44,8 @@ app.post('/api/form', (req, res) => {
   const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-      user: process.env.GOOGLE_MAIL_USERNAME,
-      pass: process.env.GOOGLE_MAIL_PASSWORD
+      user: keys.GOOGLE_MAIL_USERNAME,
+      pass: keys.GOOGLE_MAIL_PASSWORD
     }
   });
 
