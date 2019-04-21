@@ -4,6 +4,7 @@ import { SingleDatePicker } from 'react-dates';
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';
 import database from '../firebase/firebase';
+import axios from 'axios';
 
 export default class RequestForm extends React.Component {
   state = {
@@ -58,6 +59,20 @@ export default class RequestForm extends React.Component {
         location: this.state.location,
         date: this.state.date.valueOf(),
         vendorName: this.state.vendorName
+      });
+
+      // POST Method API to the backend server.js
+      axios.post('/api/form', {
+        email: this.state.email,
+        location: this.state.location,
+        date: this.state.date.valueOf(),
+        vendorName: this.state.vendorName
+      })
+      .then(function (response) {
+        console.log(response);
+      })
+      .catch(function (error) {
+        console.log(error);
       });
     }
   };
